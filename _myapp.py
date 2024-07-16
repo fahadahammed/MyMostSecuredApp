@@ -1,11 +1,10 @@
 from flask import Flask, jsonify, request
 from werkzeug.exceptions import BadRequest
 import jwt
-import os
 
 app = Flask(__name__)
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = "my_secret_key"
 
 @app.route("/", methods=["GET"])
 def the_root():
@@ -20,8 +19,7 @@ def login():
     username = request.json.get("username")
     password = request.json.get("password")
 
-    if username == os.getenv("USERNAME", 'admin') and \
-        password == os.getenv("PASSWORD", 'admin123'):
+    if username == "admin" and password == "admin123":
         token = jwt.encode({"username": username}, SECRET_KEY, algorithm="HS256")
         return jsonify({"token": token}), 200
     else:
@@ -41,4 +39,4 @@ def protected():
         raise BadRequest("Invalid token")
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)
